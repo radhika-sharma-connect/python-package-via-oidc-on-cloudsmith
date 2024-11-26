@@ -33,7 +33,10 @@ jobs:
       # Step 4: Build the package
       - name: Build the Python package
         working-directory: sample-python-package
-        run: python -m build
+        run: |
+          python -m build
+          pwd
+          ls -lah
 
       # Step 5: Get OIDC token
       - name: Get OIDC token
