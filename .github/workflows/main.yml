@@ -45,7 +45,7 @@ jobs:
         run: |
           value=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq '.value')
           
-          curl -X POST -H "Content-Type: application/json" -d "{\"oidc_token\":$value, \"service_slug\":\"technical-assessment-service-a\"}" https://api.cloudsmith.io/openid/interview-radhika-sharma/
+          token=$(curl -X POST -H "Content-Type: application/json" -d "{\"oidc_token\":$value, \"service_slug\":\"technical-assessment-service-a\"}" https://api.cloudsmith.io/openid/interview-radhika-sharma/ | jq -r '.token')
           
           curl --request GET --url https://api.cloudsmith.io/v1/user/self/ --header "X-Api-Key:Bearer $token" --header 'accept: application/json'
                     
