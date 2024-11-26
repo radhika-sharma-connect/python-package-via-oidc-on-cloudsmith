@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Push a Python package to Cloudsmith using OIDC to authenticate
     env:
-     CLOUDSMITH_SERVICE_ACCOUNT_SLUG: "technical-assessment-service-account"
+     CLOUDSMITH_SERVICE_ACCOUNT_SLUG: "technical-assessment-service-a"
      CLOUDSMITH_ORGANIZATION: "interview-radhika-sharma"
      CLOUDSMITH_REPO: "interview-assessment"
       
     steps:
-    #step 1 : Checkout the repository
+      # Step 1 : Checkout the repository
       - name: Check out code
         uses: actions/checkout@v4.2.2
         
@@ -30,13 +30,11 @@ jobs:
 
       # Step 3: Install build tools
       - name: Install build tools
-        working-directory: sample-python-package
         run: |
           pip install build
 
       # Step 4: Build the package
       - name: Build the Python package
-        working-directory: sample-python-package
         run: |
           python -m build
 
@@ -45,15 +43,11 @@ jobs:
         run: |
           value=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq '.value')
           
-          token=$(curl -X POST -H "Content-Type: application/json" -d "{\"oidc_token\":$value, \"service_slug\":\"technical-assessment-service-a\"}" https://api.cloudsmith.io/openid/interview-radhika-sharma/ | jq -r '.token')
+          token=$(curl -X POST -H "Content-Type: application/json" -d "{\"oidc_token\":$value, \"service_slug\":\"$CLOUDSMITH_SERVICE_ACCOUNT_SLUG\"}" https://api.cloudsmith.io/openid/$CLOUDSMITH_ORGANIZATION/ | jq -r '.token')
           
           curl --request GET --url https://api.cloudsmith.io/v1/user/self/ --header "X-Api-Key:Bearer $token" --header 'accept: application/json'
                     
           echo "CLOUDSMITH_API_KEY=$token" >> $GITHUB_ENV
-          echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
-          echo $ACTIONS_ID_TOKEN_REQUEST_URL
-          echo $value
-          echo $token
 
       # Step 6: Push the Python Package to Cloudsmith
       - name: Push the Built Python Package to Cloudsmith
@@ -63,5 +57,5 @@ jobs:
           format: "python"
           owner: $CLOUDSMITH_ORGANIZATION
           repo: $CLOUDSMITH_REPO
-          republish: "true"
-          file: "sample-python-package/dist/sample_python_package-0.1.0.tar.gz"
+          republish: "false"
+          file: "dist/sample_python_package-*.tar.gz"
