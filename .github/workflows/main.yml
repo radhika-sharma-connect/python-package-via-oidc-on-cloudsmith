@@ -50,7 +50,6 @@ jobs:
       - name: Push the Built Python Package to Cloudsmith
         uses: cloudsmith-io/action@v0.6.6
         with:
-          python-version: 3.9
           command: "push"
           format: "python"
           owner: $CLOUDSMITH_ORGANIZATION
