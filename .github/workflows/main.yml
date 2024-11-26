@@ -59,4 +59,4 @@ jobs:
           owner: $CLOUDSMITH_OWNER
           repo: $CLOUDSMITH_REPO
           republish: "false"
-          file: "sample_python_package-0.1.0.tar.gz"
+          file: "sample-python-package/sample-python-package/dist/sample_python_package-0.1.0.tar.gz"
