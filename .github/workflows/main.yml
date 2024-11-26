@@ -12,15 +12,50 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     name: Push a Python package to Cloudsmith using OIDC to authenticate
-    
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
 
+    steps:
+    #step 1 : Checkout the repository
+      - name: Check out code
+        uses: actions/checkout@v4.2.2
+        
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: 3.9
+
+      # Step 3: Install build tools
+      - name: Install build tools
+        run: |
+          pip install build
+
+      # Step 4: Build the package
+      - name: Build the Python package
+        run: python -m build
+
+      # Step 5: Get OIDC token
       - name: Get OIDC token
+        env: 
+          SERVICE_ACCOUNT_SLUG: "technical-assessment-service-account"
+          CLOUDSMITH_ORGANIZATION: "interview-radhika-sharma"
         run: |
           value=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq '.value')
-          token=$(curl -X POST -H "Content-Type: application/json" -d "{\"oidc_token\":$value, \"service_slug\":\"technical-assessment-service-account\"}" https://api.cloudsmith.io/openid/interview-radhika-sharma/ | jq -r '.token')
+          token=$(curl -X POST -H "Content-Type: application/json" -d "{\"oidc_token\":$value, \"service_slug\":\"$SERVICE_ACCOUNT_SLUG\"}" https://api.cloudsmith.io/openid/$CLOUDSMITH_ORGANIZATION/ | jq -r '.token')
           curl --request GET --url https://api.cloudsmith.io/v1/user/self/ --header "X-Api-Key:Bearer $token" --header 'accept: application/json'
                     
           echo "CLOUDSMITH_API_KEY=$token" >> $GITHUB_ENV
+
+      # Step 6: Push the Python Package to Cloudsmith
+      - name: Push the Built Python Package to Cloudsmith
+        uses: cloudsmith-io/action@v0.6.6
+        env:
+          CLOUDSMITH_OWNER: "radhika-sharma"
+          CLOUDSMITH_REPO: "interview-assessment"
+        with:
+          command: "push"
+          format: "python"
+          owner: $CLOUDSMITH_OWNER
+          repo: $CLOUDSMITH_REPO
+          republish: "false"
+          file: "dist/sample-python-package-0.1.0.tar.gz"      
+      
