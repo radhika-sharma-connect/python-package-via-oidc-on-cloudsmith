@@ -50,6 +50,7 @@ jobs:
           echo "CLOUDSMITH_API_KEY=$token" >> $GITHUB_ENV
           echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
           echo $ACTIONS_ID_TOKEN_REQUEST_URL
+          echo $value
           echo $token
 
       # Step 6: Push the Python Package to Cloudsmith
