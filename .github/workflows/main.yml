@@ -57,5 +57,5 @@ jobs:
           format: "python"
           owner: $CLOUDSMITH_ORGANIZATION
           repo: $CLOUDSMITH_REPO
-          republish: "false"
+          republish: "true"
           file: "dist/sample_python_package-*.tar.gz"
