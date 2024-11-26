@@ -42,17 +42,15 @@ jobs:
       - name: Get OIDC token
         run: |
           value=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq '.value')
-          
           token=$(curl -X POST -H "Content-Type: application/json" -d "{\"oidc_token\":$value, \"service_slug\":\"$CLOUDSMITH_SERVICE_ACCOUNT_SLUG\"}" https://api.cloudsmith.io/openid/$CLOUDSMITH_ORGANIZATION/ | jq -r '.token')
-          
-          curl --request GET --url https://api.cloudsmith.io/v1/user/self/ --header "X-Api-Key:Bearer $token" --header 'accept: application/json'
-                    
+          curl --request GET --url https://api.cloudsmith.io/v1/user/self/ --header "X-Api-Key:Bearer $token" --header 'accept: application/json'          
           echo "CLOUDSMITH_API_KEY=$token" >> $GITHUB_ENV
 
       # Step 6: Push the Python Package to Cloudsmith
       - name: Push the Built Python Package to Cloudsmith
         uses: cloudsmith-io/action@v0.6.6
         with:
+          python-version: 3.9
           command: "push"
           format: "python"
           owner: $CLOUDSMITH_ORGANIZATION
