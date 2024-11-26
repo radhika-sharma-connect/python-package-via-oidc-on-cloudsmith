@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Push a Python package to Cloudsmith using OIDC to authenticate
     env:
-     CLOUDSMITH_SERVICE_ACCOUNT_SLUG: "technical-assessment-service-a"
+     CLOUDSMITH_SERVICE_ACCOUNT_SLUG: "technical-assessment-service-a" # It would be the service account identifier
      CLOUDSMITH_ORGANIZATION: "interview-radhika-sharma"
      CLOUDSMITH_REPO: "interview-assessment"
       
