@@ -12,9 +12,4 @@ authors = [
     { name = "Radhika Sharma", email = "radhika.sharma.connect@gmail.com" }
 ]
 dependencies = []
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent"
-]
-python-requires = ">=3.7"
+requires-python = ">=3.7"
