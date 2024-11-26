@@ -48,6 +48,9 @@ jobs:
           curl --request GET --url https://api.cloudsmith.io/v1/user/self/ --header "X-Api-Key:Bearer $token" --header 'accept: application/json'
                     
           echo "CLOUDSMITH_API_KEY=$token" >> $GITHUB_ENV
+          echo $ACTIONS_ID_TOKEN_REQUEST_TOKEN
+          echo $ACTIONS_ID_TOKEN_REQUEST_URL
+          echo $token
 
       # Step 6: Push the Python Package to Cloudsmith
       - name: Push the Built Python Package to Cloudsmith
